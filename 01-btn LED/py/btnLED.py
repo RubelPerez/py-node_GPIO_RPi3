@@ -1,9 +1,14 @@
 import sys
 from tkinter import *
 from PIL import Image, ImageTk
-
+import RPi.GPIO as GPIO
+import time
 
 ws = Tk()
+ledPin = 11
+
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(ledPin, GPIO.OUT)
 
 
 def change_img(Switch):
@@ -11,6 +16,7 @@ def change_img(Switch):
         img2 = ImageTk.PhotoImage(Image.open("resources/on.png"))
         label.configure(image=img2)
         label.image = img2
+
     else:
         img2 = ImageTk.PhotoImage(Image.open("resources/off.png"))
         label.configure(image=img2)
@@ -21,10 +27,11 @@ def switchLED():
     switchResult = 0
     if switchButton.config('text')[-1] == 'APAGAR':
         switchButton.config(text='ENCENDER')
+        GPIO.output(ledPin, GPIO.LOW)
         switchResult = 0
     else:
         switchButton.config(text='APAGAR')
-        print("encender luz")
+        GPIO.output(ledPin, GPIO.HIGH)
         switchResult = 1
     change_img(switchResult)
 
@@ -35,6 +42,7 @@ def Comandos():
 
 
 def exitAPP():
+    GPIO.cleanup()
     sys.exit()
 
 
